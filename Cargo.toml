@@ -38,7 +38,7 @@ chrono = "0.4.19"
 libmath = "0.2.1"
 # colors-transform = "0.2.11"
 futures = "0.3.12"
-# tint = "1.0.1"
+tint = "1.0.1"
 
 [profile.release]
 opt-level = 'z'
