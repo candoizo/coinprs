@@ -12,11 +12,3 @@ pub fn get_config() -> Config {
         .unwrap();
     settings
 }
-
-
-pub fn get_col_title(conf: Config) -> String {
-
-    
-
-    "abc".to_owned()
-}

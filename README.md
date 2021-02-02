@@ -1,18 +1,26 @@
 # Coinp.rs 💰
 
-A config-driven customizable cryptocurrency command line tool written in Rust :crab:.
+A config-driven customizable cryptocurrency command line tool written in Rust :crab: , powering https://coinprs.com & https://coinp.rs
 
 ## Features
 
+-   A locally installable
 -   Track hundreds of token prices with CoinGecko API (thanks! 🐍).
 -   **YAML** configuration files, plus support for TOML/JSON/HJSON/INI.
 -   Outrageously fast, customizable, and cross-platform!
--   Well sutied for cli / stdio / cronjob interaction
+-   Well suited for cli / stdio / cronjob interaction
 -   Red-green colourblind mode (plus fully custom colours!) ❤️
 
 #### Screenshots
 
 @TODO
+
+#### Try me!
+
+I'll host a copy to try for convience, without installing!
+```bash
+curl https://api.coinp.rs/bitcoin
+```
 
 ## Installation
 

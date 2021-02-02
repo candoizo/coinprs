@@ -72,9 +72,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let ticker_key = dict.keys().into_iter().nth(0).unwrap();
         let ticker_info = &dict[ticker_key];
         let ticker_price: f64 = ticker_info["usd"].to_string().parse().unwrap();
-        let ticker_market_cap_f64: f64 = ticker_info["usd_market_cap"].to_f64().unwrap() / 1_000_000.0 as f64;
+        let ticker_market_cap_f64: f64 =
+            ticker_info["usd_market_cap"].to_f64().unwrap() / 1_000_000.0 as f64;
         let ticker_market_cap: Decimal = Decimal::from_f64(ticker_market_cap_f64).unwrap();
-        let ticker_vol_day_f64: f64 = ticker_info["usd_24h_vol"].to_f64().unwrap() / 1_000_000.0 as f64;
+        let ticker_vol_day_f64: f64 =
+            ticker_info["usd_24h_vol"].to_f64().unwrap() / 1_000_000.0 as f64;
         let ticker_vol_day: Decimal = Decimal::from_f64(ticker_vol_day_f64).unwrap();
 
         let ticker_price_flux: f64 = ticker_info["usd_24h_change"].to_f64().unwrap();
@@ -86,7 +88,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
         let last_update = ticker_info["last_updated_at"].to_i64().unwrap();
         let ti = Utc.timestamp(last_update, 0);
-        // let ht = chrono_humanize::HumanTime::from(ti);
         let last_update_min = Utc::now().signed_duration_since(ti).num_minutes();
         let ht = last_update_min.to_string() + &"m";
         let mut pretty_time_col = comfy_table::Color::Green;
@@ -123,25 +124,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 let asset_net: Decimal = Decimal::from_str(&(ticker_price * qty).to_string())?;
                 total_net += &asset_net.to_f64().unwrap();
                 let qty_rounded = round::half_up(qty, base_decimals as i8);
-                table.add_row(vec![
-                    Cell::new(c.to_string()),
-                    Cell::new(ticker_key.to_string()).add_attribute(Attribute::Bold),
-                    Cell::new(qty_rounded.to_string()).fg(comfy_table::Color::Yellow),
-                    Cell::new(desc.to_string()),
-                    Cell::new(currency::to_fiat(asset_net, def_curr).to_string()),
-                    Cell::new(
-                        currency::to_fiat(Decimal::from_str(&ticker_price.to_string())?, def_curr)
-                            .to_string(),
-                    ),
-                    Cell::new(currency::to_fiat(ticker_market_cap, def_curr).to_string() + &"M"),
-                    Cell::new(currency::to_fiat(ticker_vol_day, def_curr).to_string() + &"M"),
-                    Cell::new(price_flux_pretty.to_owned())
-                        .fg(pretty_col)
-                        .set_alignment(CellAlignment::Center),
-                    Cell::new(ht.to_string())
-                        .fg(pretty_time_col)
-                        .set_alignment(CellAlignment::Center),
-                ]);
+
+                let values: Vec<String> = vec![
+                    c.to_string(),
+                    ticker_key.to_string(),
+                    qty_rounded.to_string(),
+                    desc.to_string(),
+                    currency::to_fiat(asset_net, def_curr).to_string(),
+                    currency::to_fiat(Decimal::from_str(&ticker_price.to_string())?, def_curr)
+                        .to_string(),
+                    currency::to_fiat(ticker_market_cap, def_curr).to_string() + &"M",
+                    currency::to_fiat(ticker_vol_day, def_curr).to_string() + &"M",
+                    price_flux_pretty.to_string(),
+                    ht.to_string()
+
+                ];
+                let row = table::get_row(&conf, values);
+                table.add_row(row);
             }
         }
     }
