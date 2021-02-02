@@ -1,0 +1,32 @@
+[table]
+title = "we like the coin 🔷✋"
+
+[money]
+decimals = 2
+currency = [ "usd", "btc" ]
+
+[[assets]]
+[assets.bitcoin]
+desc = "binance account"
+amount = 0.3
+
+[[assets]]
+[assets.bitcoin]
+desc = "cold storage"
+amount = 0.00432
+tint = "#icyblue"
+decimals = 4
+
+[[assets]]
+[assets.ethereum]
+desc = "metamask desktop"
+amount = 0.05
+
+[[assets]]
+[assets.ethereum]
+desc = "weth"
+amount = 0.02
+
+[[assets]]
+[assets.dogecoin]
+amount = 1_337

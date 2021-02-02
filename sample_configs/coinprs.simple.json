@@ -1,0 +1,45 @@
+{
+  "table": {
+    "title": "we like the coin 🔷✋"
+  },
+  "money": {
+    "decimals": 2,
+    "currency": [
+      "usd",
+      "btc"
+    ]
+  },
+  "assets": [
+    {
+      "bitcoin": {
+        "desc": "binance account",
+        "amount": 0.3
+      }
+    },
+    {
+      "bitcoin": {
+        "desc": "cold storage",
+        "amount": 0.00432,
+        "tint": "#icyblue",
+        "decimals": 4
+      }
+    },
+    {
+      "ethereum": {
+        "desc": "metamask desktop",
+        "amount": 0.05
+      }
+    },
+    {
+      "ethereum": {
+        "desc": "weth",
+        "amount": 0.02
+      }
+    },
+    {
+      "dogecoin": {
+        "amount": 1337
+      }
+    }
+  ]
+}
