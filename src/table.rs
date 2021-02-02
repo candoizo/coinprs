@@ -23,7 +23,6 @@ const TITLE_KEYS: [&str; 10] = [
 ];
 
 pub fn get_header(conf: &HashMap<String, Value>) -> Vec<Cell> {
-    // let mut map = HashMap::new();
     let mut map: Vec<Cell> = Vec::new();
     for def in TITLE_KEYS.iter() {
         let dict: HashMap<String, _> = match conf.get(def.to_owned()) {
@@ -45,20 +44,7 @@ pub fn get_header(conf: &HashMap<String, Value>) -> Vec<Cell> {
 
         let default_tint: comfy_table::Color = comfy_table::Color::White;
         let tint: comfy_table::Color = match dict.get("tint") {
-            Some(val) => {
-                let first_char = val.to_string().chars().next().unwrap().to_string();
-                if first_char == "#" {
-                    // hex code with #
-                    let row_tint = tint::Color::from(val.to_string());
-                    Rgb {
-                        r: (row_tint.red * 255.0) as u8,
-                        g: (row_tint.green * 255.0) as u8,
-                        b: (row_tint.blue * 255.0) as u8,
-                    }
-                } else {
-                    default_tint
-                }
-            }
+            Some(val) => conf::parse_tint(val),
             None => default_tint,
         };
 
@@ -105,45 +91,102 @@ pub fn get_row(
     let def_align: CellAlignment = CellAlignment::Left;
 
     for (i, item) in vec.iter().enumerate() {
-        println!("{:?} {:?}", head_dict, item);
-        let row_dict : HashMap<String, Value> = match head_dict.get(TITLE_KEYS[i]) {
+        // println!("{:?} {:?}", head_dict, item);
+        let row_dict: HashMap<String, Value> = match head_dict.get(TITLE_KEYS[i]) {
             Some(i) => {
                 let m_dict: HashMap<String, Value> = i.to_owned().try_into().unwrap();
-                println!("{:?}", m_dict);
+                // println!("{:?}", m_dict);
                 match m_dict.get("rows") {
-                    Some(i) => {
-                        i.to_owned().try_into().unwrap()
-                        },
-                    None => {
-                        HashMap::new()
-                    }
+                    Some(i) => i.to_owned().try_into().unwrap(),
+                    None => HashMap::new(),
                 }
-                },
-            None => HashMap::new()
+            }
+            None => HashMap::new(),
         };
 
-        let row_tint : comfy_table::Color = match row_dict.get("tint") {
-            Some(val) => {
-                let first_char = val.to_string().chars().next().unwrap().to_string();
-                if first_char == "#" {
-                    // hex code with #
-                    let row_tint = tint::Color::from(val.to_string());
-                    Rgb {
-                        r: (row_tint.red * 255.0) as u8,
-                        g: (row_tint.green * 255.0) as u8,
-                        b: (row_tint.blue * 255.0) as u8,
-                    }
-                } else {
-                    def_tint
-                }
+        let mut row_tint: comfy_table::Color = match row_dict.get("tint") {
+            Some(val) => match val.to_string() == "tint" {
+                true => Rgb {
+                    r: (row_tint.red * 255.0) as u8,
+                    g: (row_tint.green * 255.0) as u8,
+                    b: (row_tint.blue * 255.0) as u8,
                 },
-            None => def_tint
+                false => conf::parse_tint(val),
+            },
+            None => def_tint,
         };
 
-        let row_align : comfy_table::CellAlignment = match row_dict.get("align") {
+        let row_align: comfy_table::CellAlignment = match row_dict.get("align") {
             Some(val) => conf::parse_align(val),
-            None => def_align
+            None => def_align,
         };
+
+
+        // try to match end for "m" or "%"
+        // let l_char: String = item.to_string().chars().last().unwrap().to_string();
+        // match l_char.as_str() {
+        //     "m" => {
+        //         let num: usize = item
+        //             .to_string()
+        //             .chars()
+        //             .next()
+        //             .unwrap()
+        //             .to_string()
+        //             .parse()
+        //             .unwrap();
+        //         row_tint = match num {
+        //             0..=2 => comfy_table::Color::Green,
+        //             3..=5 => comfy_table::Color::Yellow,
+        //             _ => comfy_table::Color::Red,
+        //         }
+        //     }
+        //     "%" => {
+        //         let f_char = item.to_string();
+        //         let mut chars = f_char.chars().next().unwrap().to_string();
+        //         row_tint = match chars.as_str() {
+        //             "-" => comfy_table::Color::Red,
+        //             _ => comfy_table::Color::Green
+        //         }
+        //     }
+        //     _ => {}
+        // };
+
+        if TITLE_KEYS[i] == "update" {
+            let num: usize = item
+                    .to_string()
+                    .chars()
+                    .next()
+                    .unwrap()
+                    .to_string()
+                    .parse()
+                    .unwrap();
+                row_tint = match num {
+                    0..=2 => comfy_table::Color::Green,
+                    3..=5 => comfy_table::Color::Yellow,
+                    _ => comfy_table::Color::Red,
+                }
+        } else if TITLE_KEYS[i] == "24hr_diff" {
+            let f_char: String = item.to_string().chars().next().unwrap().to_string();
+            row_tint = match f_char.as_str() {
+                "-" => comfy_table::Color::Red,
+                _ => comfy_table::Color::Green
+            }
+            // let mut chars = f_char.chars().next().unwrap().to_string();
+        }
+       //     // set tint based on time since update
+       //     let num: usize = item
+       //         .to_string()
+       //         .chars()
+       //         .next()
+       //         .unwrap()
+       //         .to_string()
+       //         .parse()
+       //         .unwrap();
+       //     tint = match num {
+       //         0..=2 => comfy_table::Color::Green,
+       //         3..=5 => comfy_table::Color::Yellow,
+       //         _ => comfy_table::Color::Red,
+       //     }
 
         // // let row_dict: HashMap<String, Value> = header_dict.to_owned()[&i.to_string()];
         // let mut tint: comfy_table::Color = comfy_table::Color::White;
@@ -189,7 +232,9 @@ pub fn get_row(
         // }
 
         // let cell = Cell::new(item.to_string());//.fg(tint);
-        let cell = Cell::new(item.to_string()).set_alignment(row_align).fg(row_tint);
+        let cell = Cell::new(item.to_string())
+            .set_alignment(row_align)
+            .fg(row_tint);
         map.push(cell);
     }
 

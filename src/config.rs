@@ -22,14 +22,11 @@ pub fn parse_align(arg1: &Value) -> comfy_table::CellAlignment {
         .unwrap()
         .to_string()
         .to_lowercase();
-    if first_char == "l" {
-        CellAlignment::Left
-    } else if first_char == "c" {
-        CellAlignment::Center
-    } else if first_char == "r" {
-        CellAlignment::Right
-    } else {
-        CellAlignment::Left
+    match first_char.as_str() {
+        "l" => CellAlignment::Left,
+        "c" => CellAlignment::Center,
+        "r" => CellAlignment::Right,
+        _ => CellAlignment::Left,
     }
 }
 
@@ -44,7 +41,7 @@ pub fn parse_tint(arg1: &Value) -> comfy_table::Color {
                 g: (row_tint.green * 255.0) as u8,
                 b: (row_tint.blue * 255.0) as u8,
             }
-        },
-        false => comfy_table::Color::White
+        }
+        false => comfy_table::Color::White,
     }
 }

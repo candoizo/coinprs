@@ -133,13 +133,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let net_str: &str = &total_net.to_string();
     let pretty_net: String = currency::to_fiat(Decimal::from_str(net_str)?, def_curr).to_string();
     println!(
-        "[!] {4}\n{0}\n[{2}] Total Net Worth: {1}{3}",
+        "{0}\n[{2}] Total Net Worth: {1}{3}",
         table,
         pretty_net.green(),
         // "=".green(),
         "=".green(),
-        base_curr[0].yellow(),
-        base_curr[0]
+        base_curr[0].to_uppercase().yellow(),
     );
 
     Ok(())
