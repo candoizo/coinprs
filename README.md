@@ -176,6 +176,7 @@ Please include your operating system, rust versions, configuration, where you in
 -   More modular
 -   Web interfacing
 -   Streaming updates
+-   Prune gratiuitous crates
 -   Optional interactive interfaces!
 -   Optional database collections!
 

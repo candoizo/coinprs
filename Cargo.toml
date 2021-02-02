@@ -36,7 +36,6 @@ log = "0.4.14"
 simplelog = "0.9.0"
 chrono = "0.4.19"
 libmath = "0.2.1"
-# colors-transform = "0.2.11"
 futures = "0.3.12"
 tint = "1.0.1"
 

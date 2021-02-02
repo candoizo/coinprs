@@ -81,22 +81,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
         let ticker_price_flux: f64 = ticker_info["usd_24h_change"].to_f64().unwrap();
         let price_flux_pretty = round::stochastic(ticker_price_flux, 2).to_string() + "%";
-        // let pretty_col = match ticker_price_flux < 0.0 {
-        //     true => comfy_table::Color::Red,
-        //     false => comfy_table::Color::Green,
-        // };
 
         let last_update = ticker_info["last_updated_at"].to_i64().unwrap();
         let ti = Utc.timestamp(last_update, 0);
         let last_update_min = Utc::now().signed_duration_since(ti).num_minutes();
         let ht = last_update_min.to_string() + &"m";
-        // let pretty_time_col = match last_update_min {
-        //     0..=2 => comfy_table::Color::Green,
-        //     3..=5 => comfy_table::Color::Yellow,
-        //     _ => comfy_table::Color::Red,
-        // };
-        for x in &assets {
 
+        for x in &assets {
             let asset_type = x.keys().into_iter().next().unwrap();
             // println!("{:#?} {}", x, asset_type);
             if &ticker_key == &asset_type {
@@ -131,7 +122,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 let tint: tint::Color = match nest_dict.get("tint") {
                     Some(i) => tint::Color::from(i),
                     None => tint::Color::from("#FFFFFF"), // Ok(i) => i,
-                                           // Err(_e) => ""
+                                                          // Err(_e) => ""
                 };
                 let row = table::get_row(&conf, values, tint);
                 table.add_row(row);
