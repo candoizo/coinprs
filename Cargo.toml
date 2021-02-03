@@ -6,28 +6,16 @@ authors = ["candoizo <candoizo@protonmail.com>"]
 edition = "2018"
 keywords = ["cryptocurrency", "currency", "cli"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 coingecko = "0.1.0"
-# tokio = {version="1.1.1", features=["full"]}
 tokio = {version="1.1.1", default-features=false, features=[
-  # "fs",
-  # "io-util",
-  # "io-std",
   "macros",
   "net",
-  # "parking_lot",
   "process",
-  # "rt",
   "rt-multi-thread",
-  # "signal",
-  # "sync",
-  # "time",
   ]}
 isahc = { version = "0.9", default-features = false, features = ["http2", "text-decoding"]}
 comfy-table = "2.1.0"
-# seahorse = "1.1.1"
 rusty-money = {version="0.4.1", features=["iso", "crypto"]}
 colored = "2.0.0"
 config = "0.10.1"
@@ -38,6 +26,8 @@ chrono = "0.4.19"
 libmath = "0.2.1"
 futures = "0.3.12"
 tint = "1.0.1"
+clap = "3.0.0-beta.2"
+# seahorse = "1.1.1"
 
 [profile.release]
 opt-level = 'z'

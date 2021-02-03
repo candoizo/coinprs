@@ -1,0 +1,106 @@
+money:
+  round: 2
+  currency:
+    - usd
+
+assets:
+
+  - bitcoin:
+      desc: savings
+      tint: "#82abd1"
+      amount: 0.01
+
+  - bitcoin:
+      desc: coinvanity
+      tint: "#82abd1"
+      amount: 0.032
+
+
+  - nexo:
+      amount: 759.1
+      tint: "#1db2f2"
+
+  -  usd-coin:
+      desc: emergency
+      amount: 1450
+      tint: "#f21d8a"
+
+table:
+  sort:
+    key: value
+    inverse: true
+  # header: row # column for left side
+  # sort_key: currency
+  # reverse_sort: false
+  # sort: alpha # alpha, value
+  exclude: # do not show specific columns
+    - desc
+    - market_cap
+    - data_update
+  # include: # reorder default layout, ignores exclude
+  #   - currency
+
+  # override column headers
+  localize:
+    # tint:
+    #   default:
+    #     green:
+    #     blue:
+    #     red:
+    #     yellow:
+    #     cyan:
+    #   global:
+    #     time:
+    #       new: green
+    #       older: yellow
+    #       oldest: red
+    #     percent:
+    #       up: green
+    #       down: red
+    #     money:
+    #       fiat: green
+    #       crypto: cyan
+    #     string:
+
+    header:
+      market_cap:
+        rows:
+          align: right
+          tint: tint
+      24hr_vol:
+        rows:
+          align: right
+      currency:
+        rows:
+          tint: tint
+      24hr_diff:
+        rows:
+          align: center
+      price:
+        rows:
+          align: right
+
+      value:
+        rows:
+          align: right
+      # desc:
+      #   rows:
+      #     align: center
+      update:
+        text: from
+        align: "center"
+        rows:
+          align: center
+          tint: tint
+      num: # overriding num column header
+        text: "#" # new title
+        align: center # centered title
+        tint: "#68d19b" # green text
+        rows:
+          tint: "tint" # special color that uses asset tint if set
+          align: center
+      quantity:
+        text: qty # abbreviating quantity -> qty
+        rows:
+          tint: "#68d19b"
+          align: right
