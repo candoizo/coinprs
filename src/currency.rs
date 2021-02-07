@@ -21,26 +21,59 @@ pub fn to_fiat(x: Decimal, fiat: &'static Currency) -> Money<'static, iso::Curre
 }
 
 #[derive(Debug)]
-pub struct CoingeckoResponse {
-    asset: String,
-    price: f64,
-    market_cap: f64,
-    day_vol: f64,
-    day_change: f64,
-    updated_at: u64, // milliseconds since last update
+pub struct Asset {
+    pub name: String,
+    pub desc: String,
+    pub tint: String,
+    pub amount: f64,
+    pub decimals: usize,
 }
 
+pub fn to_asset(x: &HashMap<String, HashMap<String, String>>) -> Asset {
+
+    let asset_type = x.keys().into_iter().next().unwrap();
+    let info = &x[asset_type];
+
+    let desc: String = match info.get("desc") {
+        Some(i) => i.to_string(),
+        None => "".to_owned(),
+    };
+
+    let tint: String = match info.get("tint") {
+        Some(i) => i.to_string(),
+        None => "".to_owned(),
+    };
+
+    let amount: f64 = match info.get("amount") {
+        Some(i) => i.parse().unwrap_or(0.0),
+        None => 0.0,
+    };
+
+    let decimals: usize = match info.get("decimals") {
+        Some(i) => i.parse().unwrap_or(0),
+        None => 2,
+    };
+
+    Asset {
+        name: asset_type.to_string(),
+        desc,
+        tint,
+        amount,
+        decimals,
+    }
+}
 
 #[derive(Debug)]
-pub struct Asset {
-    name: String,
-    desc: String,
-    amount: f64,
-    tint: String,
-    decimals: usize
+pub struct CoingeckoResponse {
+    pub asset: String,
+    pub price: f64,
+    pub market_cap: f64,
+    pub day_vol: f64,
+    pub day_change: f64,
+    pub updated_at: u64, // milliseconds since last update
 }
 
-use chrono::prelude::*;
+// use chrono::prelude::*;
 use rust_decimal::prelude::ToPrimitive;
 pub fn to_coingecko_response(
     x: &HashMap<String, HashMap<String, rust_decimal::Decimal>>,
@@ -52,7 +85,7 @@ pub fn to_coingecko_response(
     let price: f64 = ticker_info["usd"].to_f64().unwrap();
     let market_cap: f64 = ticker_info["usd_market_cap"].to_f64().unwrap();
     let day_vol: f64 = ticker_info["usd_24h_vol"].to_f64().unwrap();
-    let day_flux: f64 = ticker_info["usd_24h_change"].to_f64().unwrap();
+    let day_change: f64 = ticker_info["usd_24h_change"].to_f64().unwrap();
     // let info = ;
     // let ticker_price: f64 = ticker_info["usd"].to_string().parse().unwrap();
     // let ticker_market_cap_f64: f64 =
@@ -66,18 +99,18 @@ pub fn to_coingecko_response(
     // let price_flux_pretty =
     //     round::stochastic(ticker_price_flux, base_decimals).to_string() + "%";
 
-    let last_update: u64 = ticker_info["last_updated_at"].to_u64().unwrap();
+    let updated_at: u64 = ticker_info["last_updated_at"].to_u64().unwrap();
     // let ti = Utc.timestamp(last_update, 0);
     // let last_update_min = Utc::now().signed_duration_since(ti).num_minutes();
     // let ht = last_update_min.to_string() + &"m";
 
     CoingeckoResponse {
         asset: ticker_key,
-        price: price,
-        market_cap: market_cap,
-        day_vol: day_vol,
-        day_change: day_flux,
-        updated_at: last_update,
+        day_change,
+        price,
+        market_cap,
+        day_vol,
+        updated_at,
     }
 }
 

@@ -1,35 +1,27 @@
 # Coinp.rs 💰
 
-A config-driven customizable cryptocurrency command line tool written in Rust :crab:
+A sparkly config-driven cryptocurrency tracking cli written in Rust :crab:
 
 ## Features
 
 -   Track hundreds of token prices with CoinGecko API (thanks! 🐍).
+-   Outrageously customizable, fast, cross-platform, 2.1mb!
 -   **YAML** configuration files, plus support for TOML/JSON/HJSON/INI.
--   Outrageously fast, customizable, tiny, and cross-platform!
--   Well suited for cli / stdio / cronjob interaction.
+-   Well suited for cli / stdio / cronjob interactions
 -   Red-green colourblind mode (or fully `#CUST0M` hex colours!) ❤️
 
 #### Screenshots
 
 @TODO
 
-#### Try me without installing!
-
-I'll host a copy to test for convience, without installing!
-```bash
-# outputs the equivalent of `coinprs price bitcoin`
-# note: price is the only available endpoint
-curl https://api.coinp.rs/price/bitcoin
-```
-
 ## Installation
 
-Docker: (1337Mb) **Recommended**
+Docker: (3Mb) **Recommended**
+
 ```bash
 docker pull https://registry.gitlab.com/candoizo/coinprs:latest
-# save your configuration file, and it's ready to go!
-docker run -v ./coinprs.yml:/coinprs.yml candoizo/coinprs report
+# save a configuration file somewhere, and it's ready to go!
+docker run -v "./coinprs.yml:/coinprs.yml" candoizo/coinprs report
 ```
 
 Rust Cargo: `cargo install coinprs`
@@ -49,38 +41,42 @@ cd coinprs && makepkg -si
 By default we check for a file named `coinprs.[yml/yaml/toml/json]` in the current directory (`.`), the user's home (`$HOME`), and finally (`$HOME/.config/`). YAML Is recommended for non-programmatic use.
 
 There are 3 main sections;
-- `assets:` is meant for our data source (ie: I own x and want to track it)
-- `money:` is focused on currency / rounding (ie: I want USD conversion)
-- `table:` is focused on styling / alignment (ie: I want periwinkle numbers)
+
+-   `assets:` is meant for our data source (ie: I own x and want to track it)
+-   `money:` is focused on currency / rounding (ie: I want USD conversion)
+-   `table:` is focused on styling / alignment (ie: I want periwinkle numbers)
 
 **Sample Basic Configuration:**
+
 ```yml
 # tldr: configure your local currency, add some assets, type `coinprs report`
 table:
-  localize:
+  title: alt coin yoloview
+  sort: market_cap
+  reverse: true
+  layout: [] # custom order of columns
+  localize: # styling headers, rows with tints and text align
     headers:
       num:
-        text: "#"
-        tint: "#21d4da"
-        align: center
+        text: "#" # replacing the index column title
+        color: green # or #GREEEN for hex codes
         rows:
-          tint: tint
+          align: right
 
-money:
-  decimals: 2
-  currency:
-    - usd
-    - btc
+      asset:
+        tint: red
+        rows:
+          tint:
 
 assets:
   - bitcoin:
-      desc: binance account
+      desc: exchange funds
       amount: 0.3
 
   - bitcoin:
       desc: cold storage
       amount: 0.00432
-      tint: "#icyblue"
+      tint: "#icyblu"
       decimals: 4 # override global money decimals
 
   - ethereum:
@@ -94,7 +90,13 @@ assets:
   - dogecoin:
       amount: 1337
 
+# we'll use the "money:" defaults
+# money:
+#   currencies:
+#     - usd
 ```
+
+@TODO Screenshot here
 
 See [this](./yaml) same example written in [toml](./toml) or [json](./json) or [ini](./ini)!
 
@@ -103,7 +105,9 @@ See [this](./yaml) same example written in [toml](./toml) or [json](./json) or [
 This is the main point, although considering accessbility like red/green colourblindness the app also has a method for customizing most assets, or maybe you want to make things look awesome? Read on for the full picture / check the examples!
 
 #### `assets:`
+
 Full documentation of current options in the asset field. Welcome to the 🍖.
+
 ```yml
 # assets contains an array of entries
 assets: # top level key
@@ -127,11 +131,12 @@ assets: # top level key
     amount: 0.0000001
     decimals: 10
     tint: "#greeny"
-
 ```
 
 #### `money:`
+
 Full documentation of current options in the table field., for outputting currency.
+
 ```yml
 money: # top level key
 
@@ -144,13 +149,12 @@ money: # top level key
                          # global version of assets:
                          #                    bitcoin:
                          #                      round: 2
-
-
-
 ```
 
 #### `table:`
+
 Full documentation of current options in the table field., for styling and formatting. Demonstrated by making a colourblind theme.
+
 ```yml
 table: # top level key
   # contains ->
@@ -198,7 +202,6 @@ table: # top level key
 
     currency:
       title: abc
-
 ```
 
 Voila! These can be applied many times over, I have included three complex versions in `sample_configs/`.
@@ -208,6 +211,7 @@ Voila! These can be applied many times over, I have included three complex versi
 **Examples:**
 
 List supported coins in config.
+
 ```sh
 coinprs list
 ...snip...
@@ -219,8 +223,9 @@ Print out and optionally (-s)aving output to a file.
 
 ```sh
 coinprs report -s # -q can hide the table
-
 Saved to ./coinprs.2020-01-31.14.36.55.txt
+# alternatively, lets redirect to a file with no output
+coinprs report > $TIME.txt
 ```
 
 Display only bitcoin assets.
@@ -248,19 +253,19 @@ cd coinprs/docker && docker-compose build
 
 Please include your operating system, rust versions, configuration, where you installed the package / how you are using it. Thanks in advance!
 
+If you have a particular feature request or inconsistency wirth addressing, include reasoning for why it would be a good change. Thanks!
+
 ## @TODO
 
--   More modular
--   Web interfacing
--   Streaming updates
--   Prune gratiuitous crates
--   Optional interactive interfaces!
--   Optional database collections!
+- Things, for sure.
 
 ## License
 
+Apache 2.0 License
+
 Following conditions must be met:
-- Improvements / new features must be passed back to this project
-- Bug fixes / additional enhancements must be documented
+
+-   Improvements / new features must be passed back to this project
+-   Bug fixes / additional enhancements must be documented
 
 To be determined...

@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use clap::{App, Arg, ArgMatches};
 pub fn get_opts() -> ArgMatches {
     let matches = App::new(env!("CARGO_PKG_NAME"))
@@ -9,21 +10,9 @@ pub fn get_opts() -> ArgMatches {
                 .short('c')
                 .long("config")
                 .value_name("FILE")
-                .about("Sets a custom config file")
+                .about("Set path to a custom config file")
                 .takes_value(true),
         )
-        // .arg(
-        //     Arg::new("INPUT")
-        //         .about("Sets the input file to use")
-        //         .required(true)
-        //         .index(1),
-        // )
-        // .arg(
-        //     Arg::new("v")
-        //         .short('v')
-        //         .multiple(true)
-        //         .about("Sets the level of verbosity"),
-        // )
         .subcommand(
             App::new("show")
                 .about("print list of supported assets")
@@ -59,33 +48,16 @@ pub fn get_opts() -> ArgMatches {
         )
         .get_matches();
 
-        let conf_path = match matches.value_of("config") {
-            Some(i) => i,
-            None => "coinprs"
-        };
-        println!("{}", conf_path);
-        // if (matches.is_present("config")) {
-        //     println!("CUSTOM CONFIGURATION?! {:?}", matches.value_of("config"));
-        // } else {
-        //     println!("Using default config!");
-        // }
-
-
-
-
     matches
 }
 
-use config::{Config, Environment, File, Value};
-
+use config::{Config, Environment, File};
 pub fn get_config() -> Config {
-
     let matches = self::get_opts();
     let conf_path = match matches.value_of("config") {
         Some(i) => i,
-        None => "coinprs"
+        None => "coinprs",
     };
-
 
     let f = File::with_name(conf_path);
     let mut settings = Config::default();
@@ -100,37 +72,41 @@ pub fn get_config() -> Config {
 }
 
 use comfy_table::CellAlignment;
-pub fn parse_align(arg1: &Value) -> comfy_table::CellAlignment {
-    let first_char = arg1
-        .to_string()
-        .chars()
-        .next()
-        .unwrap()
-        .to_string()
-        .to_lowercase();
-    match first_char.as_str() {
+pub fn parse_align(arg1: &str) -> comfy_table::CellAlignment {
+    match &arg1[..1] {
         "l" => CellAlignment::Left,
         "c" => CellAlignment::Center,
         "r" => CellAlignment::Right,
         _ => CellAlignment::Left,
     }
+    // let first_char = arg1
+    //     .to_string()
+    //     .chars()
+    //     .next()
+    //     .unwrap()
+    //     .to_string()
+    //     .to_lowercase();
+    // match first_char.as_str() {
+    //     "l" => CellAlignment::Left,
+    //     "c" => CellAlignment::Center,
+    //     "r" => CellAlignment::Right,
+    //     _ => CellAlignment::Left,
+    // }
 }
 
 use comfy_table::Color::Rgb;
-pub fn parse_tint(arg1: &Value) -> comfy_table::Color {
-    // let first_char = arg1.to_string().chars().next().unwrap().to_string();
-    // match first_char == "#" {
-    //     true => {
-    //         let row_tint = tint::Color::from(arg1.to_string());
-    //         Rgb {
-    //             r: (row_tint.red * 255.0) as u8,
-    //             g: (row_tint.green * 255.0) as u8,
-    //             b: (row_tint.blue * 255.0) as u8,
-    //         }
-    //     }
-    //     false => comfy_table::Color::White,
-    // }
-    let row_tint = tint::Color::from(arg1.to_string());
+pub fn parse_tint(arg1: &String) -> comfy_table::Color {
+    // println!("Parsing tint for: {}", arg1);
+
+    // if first char != "#",
+    // check if tint::Color::names().contains(thing);
+
+    // let tint_test : tint::Color = tint::Color::from(arg1.to_owned());
+    let try_tint = std::panic::catch_unwind(|| tint::Color::from(arg1.to_owned()));
+    let row_tint = try_tint.unwrap_or(tint::Color::from("#FFFFFF"));
+    // let row_tint : tint::Color =  test_test(&arg1.to_owned()).unwrap();//test_test(&arg1.to_owned()).unwrap_or(tint::Color::from("#FFFFFF"));
+    // println!("Parsing tint again for: {:?}", row_tint);
+    // let row_tint = tint::Color::from(arg1.to_string());
     Rgb {
         r: (row_tint.red * 255.0) as u8,
         g: (row_tint.green * 255.0) as u8,
