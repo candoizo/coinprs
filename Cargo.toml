@@ -7,28 +7,32 @@ edition = "2018"
 keywords = ["cryptocurrency", "currency", "cli"]
 
 [dependencies]
-coingecko = "0.1.0"
 tokio = {version="1.2.0", default-features=false, features=[
   "macros",
   "net",
   "process",
   "rt-multi-thread",
   ]}
+futures-util = "0.3.12"
 isahc = { version = "0.9.0", default-features = false, features = ["http2", "text-decoding"]}
-comfy-table = {version="2.1.0", default-features=false}
-rusty-money = {version="0.4.1", default-features=false, features=["iso", "crypto"]}
-colored = {version="2.0.0", default-features=false}
+
 config = {version="0.10.1", default-features=false, features=["yaml", "toml", "json"]}
-rust_decimal = {version="1.10.2", default-features=false}
-log = "0.4.14"
-simplelog = "0.9.0"
-chrono = {version="0.4.19", default-features=false, features=["clock"]}
-tint = {version="1.0.1", default-features=false}
 clap = {version="3.0.0-beta.2", default-features=false, features=['std']}
-indicatif = {version="0.15.0", features=["improved_unicode"]}
 serde = {version="1.0.123", default-features=false, features=["serde_derive"]}
 serde-value = "0.7.0"
-futures-util = "0.3.12"
+
+chrono = {version="0.4.19", default-features=false, features=["clock"]}
+rust_decimal = {version="1.10.2", default-features=false}
+rusty-money = {version="0.4.1", default-features=false, features=["iso", "crypto"]}
+coingecko = "0.1.0"
+
+comfy-table = {version="2.1.0", default-features=false}
+indicatif = {version="0.15.0", features=["improved_unicode"]}
+colored = {version="2.0.0", default-features=false}
+tint = {version="1.0.1", default-features=false}
+
+# log = "0.4.14"
+# simplelog = "0.9.0"
 
 [profile.release]
 opt-level = 'z'

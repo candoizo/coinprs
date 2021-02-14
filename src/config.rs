@@ -13,6 +13,15 @@ pub fn get_opts() -> ArgMatches {
                 .about("Set path to a custom config file")
                 .takes_value(true),
         )
+        // sort key??
+        // .arg(
+        //     Arg::new("config")
+        //         .short('c')
+        //         .long("config")
+        //         .value_name("FILE")
+        //         .about("Set path to a custom config file")
+        //         .takes_value(true),
+        // )
         .subcommand(
             App::new("show")
                 .about("print list of supported assets")

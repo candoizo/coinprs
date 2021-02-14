@@ -138,7 +138,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let net_str: &str = &total_net.to_string();
-    let btc_net : &str = &((total_net / btc_price as f64 * 1000f64).trunc() / 1000f64).to_string();
+    let btc_net : &str = &((total_net / btc_price as f64 * 10000f64).trunc() / 10000f64).to_string();
     let pretty_net: String = currency::to_fiat(Decimal::from_str(net_str)?, def_curr).to_string();
 
     println!(
