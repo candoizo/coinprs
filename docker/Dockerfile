@@ -11,10 +11,11 @@ WORKDIR /opt/build
 COPY Cargo.* ./
 RUN \
 mkdir -p src/ && \
-touch src/main.rs && \
+echo "fn main () -> () {}" > src/main.rs && \
 cargo build --release
 
 # copy rest of src
 COPY . .
 RUN \
-cargo build --release
+cargo build --release && \
+strip target/release/coinprs

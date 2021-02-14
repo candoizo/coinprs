@@ -1,0 +1,16 @@
+variables:
+  DOCKER_ENV: development
+  DOCKER_IMAGE_NAME: coinprs
+
+test:
+  stage: build
+  # image: 
+  # image: registry.gitlab.com/coinvanity/wasm/builder:development
+  # when: manual
+  # only:
+    # - release
+  script:
+    # - wasm-pack test --firefox --headless
+    # - wasm-pack build && wasm-pack pack
+    # - cd /opt/$DOCKER_IMAGE_NAME
+    # - GL_TOKEN=$CI_JOB_TOKEN yarn run semantic-release
