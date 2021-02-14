@@ -132,92 +132,26 @@ pub fn get_header(conf: &HashMap<String, Value>, visible: Vec<&str>) -> Vec<Cell
         let cell: Cell = Cell::new(title).set_alignment(align).fg(tint);
         map.push(cell)
     }
-    //
-    // if !visible.is_empty() {
-    //     println!("Specific visible columns? : {:#?}", visible);
-    //     for def in visible.iter() {
-    //         let dict: HashMap<String, _> = match conf.get(&def.to_owned()) {
-    //             Some(i) => i.to_owned().into_table().unwrap(),
-    //             None => HashMap::new(),
-    //         };
-    //
-    //         // custom title
-    //         let title: String = match dict.get("text") {
-    //             Some(val) => val.to_string(),
-    //             None => def.to_string(),
-    //         };
-    //
-    //         let align: CellAlignment = match dict.get("align") {
-    //             Some(val) => conf::parse_align(val),
-    //             None => CellAlignment::Left,
-    //         };
-    //
-    //         let tint: comfy_table::Color = match dict.get("tint") {
-    //             Some(val) => conf::parse_tint(&val.to_string()),
-    //             None => comfy_table::Color::White,
-    //         };
-    //
-    //         // create cell with calculates attributes and add to Vec
-    //         let cell: Cell = Cell::new(title).set_alignment(align).fg(tint);
-    //         map.push(cell)
-    //     }
-    // } else {
-    //     // @TODO redo this liek above
-    //     for def in TITLE_KEYS.iter() {
-    //         if !visible.is_empty() && !visible.contains(&def.to_string()) {
-    //             continue;
-    //         }
-    //         let dict: HashMap<String, _> = match conf.get(def.to_owned()) {
-    //             Some(i) => i.to_owned().into_table().unwrap(),
-    //             None => HashMap::new(),
-    //         };
-    //
-    //         // custom title
-    //         let title: String = match dict.get("text") {
-    //             Some(val) => val.to_string(),
-    //             None => def.to_string(),
-    //         };
-    //
-    //         let align: CellAlignment = match dict.get("align") {
-    //             Some(val) => conf::parse_align(val),
-    //             None => CellAlignment::Left,
-    //         };
-    //
-    //         let tint: comfy_table::Color = match dict.get("tint") {
-    //             Some(val) => conf::parse_tint(&val.to_string()),
-    //             None => comfy_table::Color::White,
-    //         };
-    //
-    //         // create cell with calculates attributes and add to Vec
-    //         let cell: Cell = Cell::new(title).set_alignment(align).fg(tint);
-    //         map.push(cell)
-    //     }
-    // };
-
     map
+}
+
+pub fn get_visible_cols(conf: &config::Config) -> Vec<String> {
+    // if empty default order is show
+    let visible_col = conf.get::<Vec<String>>("table.visible").unwrap_or(vec![]);
+    visible_col
 }
 
 // accepts [table] field dictionary from config file for styling
 // currency of the user for formatting `price` and `value`.
 // returns table with headers build in,
-pub fn get_skeleton(conf: config::Config, table_conf: &HashMap<String, Value>, _curr: &String) -> Table {
+pub fn get_skeleton(conf: &config::Config, table_conf: &HashMap<String, Value>, _curr: &String) -> Table {
     // _curr, migh thave used this to dynamically add more price columns prefixed with usd_price , btc_price etc.
     let mut table = Table::new();
 
-    // let visible_col = match conf.get::<Vec<String>>("table.visible") {
-    //     Some(i) => i,
-    //     Err => vec![]
-    // };
-
-    // let visible_cols : Vec<String> = match table_conf.get("")
-    // let visible_cols : Vec<String> = match table_conf.get("table.localize.visible") {
-    //     Some(i) => i.try_into().unwrap(),
-    //     _ => vec![]
-    // };
-    // println!("{:?}", visible_cols);
-
     // if empty default order is show
     let visible_col = conf.get::<Vec<&str>>("table.visible").unwrap_or(vec![]);
+    // let visible_col = self::get_visible_cols(conf);
+
 
     let conf = &table_conf["table"].to_owned().into_table().unwrap();
     let lang_conf = &conf["localize"].to_owned().into_table().unwrap();
@@ -233,160 +167,64 @@ pub fn get_skeleton(conf: config::Config, table_conf: &HashMap<String, Value>, _
     table
 }
 
-// // pub fn to_comfy_row(
-// //     n: u8,
-// //     row: Vec<RowData>
-// // ) -> Vec<Cell>
-//
-// pub fn get_row(
-//     conf: &HashMap<String, Value>,
-//     rank: usize,
-//     vec: Vec<String>,
-//     row_tint: tint::Color,
-// ) -> Vec<Cell> {
-//     let mut map: Vec<Cell> = Vec::new();
-//
-//     let dict: HashMap<String, Value> = conf["table"].to_owned().try_into().unwrap();
-//     let local_dict: HashMap<String, Value> = dict["localize"].to_owned().try_into().unwrap();
-//     let head_dict: HashMap<String, Value> = local_dict["header"].to_owned().try_into().unwrap();
-//
-//     // global defaults for when no settings
-//     let def_tint: comfy_table::Color = comfy_table::Color::White;
-//     let def_align: CellAlignment = CellAlignment::Left;
-//
-//     let index_cell = Cell::from(rank.to_string());
-//     map.push(index_cell);
-//
-//     for (i, item) in vec.iter().enumerate() {
-//         // println!("{:?} {:?}", head_dict, item);
-//         let row_dict: HashMap<String, Value> = match head_dict.get(TITLE_KEYS[i]) {
-//             Some(i) => {
-//                 let m_dict: HashMap<String, Value> = i.to_owned().try_into().unwrap();
-//                 // println!("{:?}", m_dict);
-//                 match m_dict.get("rows") {
-//                     Some(i) => i.to_owned().try_into().unwrap(),
-//                     None => HashMap::new(),
-//                 }
-//             }
-//             None => HashMap::new(),
-//         };
-//
-//         let mut row_tint: comfy_table::Color = match row_dict.get("tint") {
-//             Some(val) => match val.to_string() == "tint" {
-//                 true => Rgb {
-//                     r: (row_tint.red * 255.0) as u8,
-//                     g: (row_tint.green * 255.0) as u8,
-//                     b: (row_tint.blue * 255.0) as u8,
-//                 },
-//                 false => conf::parse_tint(val),
-//             },
-//             None => def_tint,
-//         };
-//         // @TODO why was this not suitable?
-//         // let tint: comfy_table::Color = match dict.get("tint") {
-//         //     Some(val) => conf::parse_tint(val),
-//         //     None => comfy_table::Color::White,
-//         // };
-//
-//         let row_align: comfy_table::CellAlignment = match row_dict.get("align") {
-//             Some(val) => conf::parse_align(val),
-//             None => def_align,
-//         };
-//
-//         // perhaps do some global that applies to
-//         // $ sign money
-//         // time (m)
-//         // % percentage
-//         // abc string
-//         // 0.0 qty
-//
-//         if TITLE_KEYS[i] == "update" {
-//             let num: usize = item
-//                 .to_string()
-//                 .chars()
-//                 .next()
-//                 .unwrap()
-//                 .to_string()
-//                 .parse()
-//                 .unwrap();
-//             row_tint = match num {
-//                 0..=2 => comfy_table::Color::Green,
-//                 3..=5 => comfy_table::Color::Yellow,
-//                 _ => comfy_table::Color::Red,
-//             }
-//         } else if TITLE_KEYS[i] == "24hr_diff" {
-//             let f_char: String = item.to_string().chars().next().unwrap().to_string();
-//             row_tint = match f_char.as_str() {
-//                 "-" => comfy_table::Color::Red,
-//                 _ => comfy_table::Color::Green,
-//             }
-//         }
-//
-//         let cell = Cell::new(item.to_string())
-//             .set_alignment(row_align)
-//             .fg(row_tint);
-//         map.push(cell);
-//     }
-//
-//     map
-// }
+pub fn sort_rows(conf_two: &config::Config, conf: &HashMap<String, Value>, mut vec: Vec<RowData>) -> Vec<RowData> {
 
-pub fn sort_rows(conf: &HashMap<String, Value>, mut vec: Vec<RowData>) -> Vec<RowData> {
     let dict: HashMap<String, Value> = conf["table"].to_owned().try_into().unwrap();
     let sort_dict: HashMap<String, String> = dict["sort"].to_owned().try_into().unwrap();
-    let sort_key: String = match sort_dict.get("key") {
+    // let sort_key: String = match sort_dict.get("key") {
+    //     Some(i) => i.to_string(),
+    //     None => "num".to_owned(),
+    // };
+
+    let sort_key = conf.get::<String>(&"table.sort.key".to_owned());
+    let sort_key = match sort_key {
         Some(i) => i.to_string(),
-        None => "num".to_owned(),
+        _ => "num".to_owned()
     };
-    let sort_inverse: bool = match sort_dict.get("inverse") {
-        Some(i) => match i
-            .to_string()
-            .chars()
-            .next()
-            .unwrap()
-            .to_string()
-            .to_lowercase()
-            .as_str()
-        {
-            "t" => true,
-            _ => false,
-        },
-        None => false,
+    //.unwrap_or("num".to_string()).to_string();
+
+
+    let sort_inverse = conf_two.get::<String>(&"table.sort.inverse".to_owned()).unwrap_or("false".to_string());
+    let sort_inverse = match &sort_inverse[..1] {
+        // Some(i) => true,
+        "t" => true,
+        "y" => true,
+        _ => false
     };
 
-    // println!("{0} {1}", sort_key, sort_inverse);
-    // let sort_key : String = sort_dict.get("key").to_string().unwrap();
-    // let key_exi = Some(sort_key);
-    // let key = key_exi.unwrap_or_else(|| {
-    //     String::from("Abc")
-    //     });
-    // let sort_key : String = sort_dict.get("key").to_owned().unwrap_or("abc").to_string();
-    // let val : String = sort_dict.get("inverse").to_string().unwrap();
-    // println!("{:?}", val);
-    // let sort_inverse : String = sort_dict.get("inverse").unwrap().try_into().unwrap();
-    // let sort_inverse : bool = sort_dict.get("inverse").unwrap_or(&Value{"false".to_string}).try_into().unwrap();
-    // let sort_inverse : bool = match sort_dict.get("inverse") {
-    //     Some(i) => i.into_bool().unwrap(),
-    //     None => "num".to_owned()
+    // let sort_inverse: bool = match sort_dict.get("inverse") {
+    //     Some(i) => match i
+    //         .to_string()
+    //         .chars()
+    //         .next()
+    //         .unwrap()
+    //         .to_string()
+    //         .to_lowercase()
+    //         .as_str()
+    //     {
+    //         "t" => true,
+    //         _ => false,
+    //     },
+    //     None => false,
+    // };
+
+    // let sort_inverse: bool = match sort_dict.get("inverse") {
+    //     Some(i) => match i
+    //         .to_string()
+    //         .chars()
+    //         .next()
+    //         .unwrap()
+    //         .to_string()
+    //         .to_lowercase()
+    //         .as_str()
+    //     {
+    //         "t" => true,
+    //         _ => false,
+    //     },
+    //     None => false,
     // };
 
     let index_of_key: usize = TITLE_KEYS.iter().position(|&r| r == sort_key).unwrap_or(0);
-    // println!("{}", index_of_key);
-    // // let index_of_sort_key = TITLE_KEYS.index
-    //
-    // // probably need to check if the first value is a number or string before sorting
-    // // if reverse then * -1 to flip the val
-    //
-    // // @TODO!!!!!: SEE THE +1 after index of key, thats because i shouldnt add the row counts early like I did
-    // vec.sort_by(|a, b| b[index_of_key + 1].cmp(&a[index_of_key + 1]));
-
-    // vec.sort_by(|a, b| {
-    //     a = a.amount;
-    //     b = b.amount;
-    //     b.cmp(a)
-    // });
-    // vec.sort_by_key(|a,b| (a.amount.to_string()).cmp(b.amount) );
-    // vec.sort_by_key(|k| k.reverse());
     vec.sort_by(|a, b| {
         // b.va
         // println!("{}", TITLE_KEYS[index_of_key]);
@@ -417,6 +255,7 @@ pub fn sort_rows(conf: &HashMap<String, Value>, mut vec: Vec<RowData>) -> Vec<Ro
 }
 
 pub fn get_table_row(
+    conf_two: &config::Config,
     conf: &HashMap<String, Value>,
     rank: usize,
     vec: &RowData,
@@ -430,62 +269,14 @@ pub fn get_table_row(
 
     // rows that are visible in the output
     let visible_cols: Vec<String> = dict["visible"].to_owned().try_into().unwrap_or(vec![]);
+    // let visible_cols = self::get_visible_cols(conf_two);
+    // let visible_cols = conf.get::<Vec<String>>("table.visible").unwrap_or(vec![]);
+
+
     // global defaults for when no settings
     // let def_tint: comfy_table::Color = comfy_table::Color::White;
     // let def_align: CellAlignment = CellAlignment::Left;
     let asset_tint: String = vec.tint.to_owned();
-
-    // let num_title: String = "num".to_owned();
-    // if visible_cols.contains(&num_title) || visible_cols.is_empty() {
-    //     let num_cell = self::get_cell(&head_dict, &num_title, (rank + 1).to_string(), &asset_tint);
-    //     map.push(num_cell);
-    // }
-
-    // let num_head_dict = match head_dict.get("num") {
-    //     Some(i) => {
-    //         let it: HashMap<String, Value> = i.to_owned().try_into().unwrap();
-    //         println!("{:?}", it);
-    //         it
-    //     }
-    //     None => HashMap::new(),
-    // };
-    //
-    // let num_dict = match num_head_dict.get("rows") {
-    //     Some(i) => {
-    //         let it: HashMap<String, Value> = i.to_owned().try_into().unwrap();
-    //         println!("{:?}", it);
-    //         it
-    //     }
-    //     None => HashMap::new(),
-    // };
-    //
-    // let num_tint = match num_dict.get("tint") {
-    //     Some(i) => {
-    //         let is = i.to_string();
-    //         println!("{:?} {:?}", is, vec.tint);
-    //         match is.as_str() {
-    //             "tint" => conf::parse_tint(&vec.tint),
-    //             "" => def_tint,
-    //             _ => conf::parse_tint(&is),
-    //         }
-    //     }
-    //     None => def_tint,
-    // };
-    //
-    // let num_align = match num_dict.get("align") {
-    //     Some(i) => conf::parse_align(i),
-    //     None => def_align,
-    // };
-    //
-    // let index_cell = Cell::from((rank + 1).to_string())
-    //     .set_alignment(num_align)
-    //     .fg(num_tint);
-    // map.push(index_cell);
-
-    // let name_cell = Cell::new(vec.name.to_string());
-    // //         .set_alignment(row_align)
-    // //         .fg(row_tint);
-    // map.push(name_cell);
 
     if !visible_cols.is_empty() {
         println!("Specified Visisble Rows, in-order: {:?}", visible_cols);
@@ -600,6 +391,8 @@ pub fn get_table_row(
                 true => (test_round_num / 10.0 ).to_string() + &"B",
                 false => test_round_num.to_string() + &"M"
             };
+
+            let round_num = currency::to_shortnum(vec.market_cap);
             // round_num = match round_num > 1000 as f64 {
             //     true => round_num / 1000 as f64,
             //     false => round_num
@@ -629,6 +422,7 @@ pub fn get_table_row(
                 true => ((test_round_num / 100.0).round() / 100.0).to_string() + &"B",
                 false => test_round_num.to_string() + &"M"
             };
+            let round_num = currency::to_shortnum(vec.day_vol);
             // let round_num = (vec.day_vol / 1_000_000.0).round() / 100.0;
             let day_vol = self::get_cell(
                 &head_dict,
@@ -663,80 +457,6 @@ pub fn get_table_row(
             map.push(updated_at);
         }
     }
-    // for item in vec.into_iter() {
-    //
-    // }
-
-    // for (i, item) in vec.iter().enumerate() {
-    //     // println!("{:?} {:?}", head_dict, item);
-    //     let row_dict: HashMap<String, Value> = match head_dict.get(TITLE_KEYS[i]) {
-    //         Some(i) => {
-    //             let m_dict: HashMap<String, Value> = i.to_owned().try_into().unwrap();
-    //             // println!("{:?}", m_dict);
-    //             match m_dict.get("rows") {
-    //                 Some(i) => i.to_owned().try_into().unwrap(),
-    //                 None => HashMap::new(),
-    //             }
-    //         }
-    //         None => HashMap::new(),
-    //     };
-    //
-    //     let mut row_tint: comfy_table::Color = match row_dict.get("tint") {
-    //         Some(val) => match val.to_string() == "tint" {
-    //             true => Rgb {
-    //                 r: (row_tint.red * 255.0) as u8,
-    //                 g: (row_tint.green * 255.0) as u8,
-    //                 b: (row_tint.blue * 255.0) as u8,
-    //             },
-    //             false => conf::parse_tint(val),
-    //         },
-    //         None => def_tint,
-    //     };
-    //     // @TODO why was this not suitable?
-    //     // let tint: comfy_table::Color = match dict.get("tint") {
-    //     //     Some(val) => conf::parse_tint(val),
-    //     //     None => comfy_table::Color::White,
-    //     // };
-    //
-    //     let row_align: comfy_table::CellAlignment = match row_dict.get("align") {
-    //         Some(val) => conf::parse_align(val),
-    //         None => def_align,
-    //     };
-    //
-    //     // perhaps do some global that applies to
-    //     // $ sign money
-    //     // time (m)
-    //     // % percentage
-    //     // abc string
-    //     // 0.0 qty
-    //
-    //     if TITLE_KEYS[i] == "update" {
-    //         let num: usize = item
-    //             .to_string()
-    //             .chars()
-    //             .next()
-    //             .unwrap()
-    //             .to_string()
-    //             .parse()
-    //             .unwrap();
-    //         row_tint = match num {
-    //             0..=2 => comfy_table::Color::Green,
-    //             3..=5 => comfy_table::Color::Yellow,
-    //             _ => comfy_table::Color::Red,
-    //         }
-    //     } else if TITLE_KEYS[i] == "24hr_diff" {
-    //         let f_char: String = item.to_string().chars().next().unwrap().to_string();
-    //         row_tint = match f_char.as_str() {
-    //             "-" => comfy_table::Color::Red,
-    //             _ => comfy_table::Color::Green,
-    //         }
-    //     }
-    //
-    //     let cell = Cell::new(item.to_string())
-    //         .set_alignment(row_align)
-    //         .fg(row_tint);
-    //     map.push(cell);
-    // }
 
     map
 }

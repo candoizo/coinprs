@@ -73,40 +73,23 @@ pub fn get_config() -> Config {
 
 use comfy_table::CellAlignment;
 pub fn parse_align(arg1: &str) -> comfy_table::CellAlignment {
-    match &arg1[..1] {
-        "l" => CellAlignment::Left,
-        "c" => CellAlignment::Center,
-        "r" => CellAlignment::Right,
-        _ => CellAlignment::Left,
+    if arg1.len() > 0 {
+        match &arg1[..1] {
+            "l" => CellAlignment::Left,
+            "c" => CellAlignment::Center,
+            "r" => CellAlignment::Right,
+            _ => CellAlignment::Left,
+            // Err(i) => CellAlignment::Left,
+        }
+    } else {
+        CellAlignment::Left
     }
-    // let first_char = arg1
-    //     .to_string()
-    //     .chars()
-    //     .next()
-    //     .unwrap()
-    //     .to_string()
-    //     .to_lowercase();
-    // match first_char.as_str() {
-    //     "l" => CellAlignment::Left,
-    //     "c" => CellAlignment::Center,
-    //     "r" => CellAlignment::Right,
-    //     _ => CellAlignment::Left,
-    // }
 }
 
 use comfy_table::Color::Rgb;
 pub fn parse_tint(arg1: &String) -> comfy_table::Color {
-    // println!("Parsing tint for: {}", arg1);
-
-    // if first char != "#",
-    // check if tint::Color::names().contains(thing);
-
-    // let tint_test : tint::Color = tint::Color::from(arg1.to_owned());
-    let try_tint = std::panic::catch_unwind(|| tint::Color::from(arg1.to_owned()));
-    let row_tint = try_tint.unwrap_or(tint::Color::from("#FFFFFF"));
-    // let row_tint : tint::Color =  test_test(&arg1.to_owned()).unwrap();//test_test(&arg1.to_owned()).unwrap_or(tint::Color::from("#FFFFFF"));
-    // println!("Parsing tint again for: {:?}", row_tint);
-    // let row_tint = tint::Color::from(arg1.to_string());
+    let row_tint = std::panic::catch_unwind(|| tint::Color::from(arg1.to_owned()))
+        .unwrap_or(tint::Color::from("#FFFFFF"));
     Rgb {
         r: (row_tint.red * 255.0) as u8,
         g: (row_tint.green * 255.0) as u8,

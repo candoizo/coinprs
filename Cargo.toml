@@ -44,3 +44,7 @@ opt-level = "z" # +
 codegen-units = 1 # +
 # panic = 'abort' # +
 debug = false # +
+
+[dev-dependencies]
+pretty_assertions = "0.6.1"
+tokio-test = "0.4.0"

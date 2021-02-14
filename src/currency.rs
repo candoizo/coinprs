@@ -1,17 +1,50 @@
-use coingecko::{Client, SimplePriceReq, SimplePrices};
-use config::Value;
-use isahc::HttpClient;
-pub async fn get_price(http: HttpClient, i: Value) -> Result<SimplePrices, coingecko::Error> {
-    let t = i.into_table().unwrap();
-    let client = Client::new(http.to_owned());
-    let name: String = t["name"].to_string();
-    let req = SimplePriceReq::new(name, "usd".into())
-        .include_market_cap()
-        .include_24hr_vol()
-        .include_24hr_change()
-        .include_last_updated_at();
-    Ok(client.simple_price(req).await.unwrap())
+pub fn to_shortnum(n: f64) -> String {
+
+    // let ne = n > 0.0;
+    // let v = match n {
+    //     0.0..=1e3 => {},
+    //     1e3..=1e6 => {},
+    //     1e6..=1e9 => {},
+    //     _ => {}
+    // };
+    // v = match ne {
+    //     true => v = v * 1.0,
+    //     false => v = v * -1.0
+    // };
+    // if ne {
+    //     v *= 1;
+    // } else {
+    //
+    // }
+
+
+    match n > 1e9 {
+        true => (((n / 1e9) * 100.0).trunc() / 100.0).to_string() + &"B",
+        false => match n > (1e6 - 1f64) {
+            true => (((n / 1e6) * 100.0).trunc() / 100.0).to_string() + &"M",
+            false => match n > (1e3 - 1f64) {
+                true => (((n / 1e3) * 100.0).trunc() / 100.0).to_string() + &"K",
+                false => n.to_string(),
+            }
+        }
+    }
 }
+
+//
+// use coingecko::{Client, SimplePriceReq, SimplePrices};
+// use config::Value;
+// use isahc::HttpClient;
+// pub async fn get_price(http: HttpClient, i: Value) -> Result<SimplePrices, coingecko::Error> {
+//     let t = i.into_table().unwrap();
+//     let client = Client::new(http.to_owned());
+//     let name: String = t["name"].to_string();
+//     let req = SimplePriceReq::new(name, "usd".into())
+//         .include_market_cap()
+//         .include_24hr_vol()
+//         .include_24hr_change()
+//         .include_last_updated_at();
+//     Ok(client.simple_price(req).await.unwrap())
+// }
 
 use rust_decimal::Decimal;
 use rusty_money::iso::Currency;
@@ -115,52 +148,29 @@ pub fn to_coingecko_response(
 }
 
 use std::collections::HashMap;
-// pub async fn get_prices(client: Client, assets: Vec<HashMap<String, HashMap<String, String>>>, curr: Vec<String>) -> Vec<impl futures::Future> {
-//     // let http = HttpClient::new().unwrap();
-//     // let client = Client::new(http);
+// pub fn get_reqs(
+//     assets: &Vec<HashMap<String, HashMap<String, String>>>,
+//     curr: &Vec<String>,
+// ) -> Vec<SimplePriceReq> {
 //     let mut futs = Vec::new();
 //     let mut already = Vec::new();
-//     // let assets: Vec<HashMap<String, HashMap<String, String>>> =
-//     //     conf["assets"].to_owned().try_into()?;
-//     for i in &assets {
+//     for i in assets {
 //         let keyname = i.keys().next().unwrap().to_string();
 //         if !already.contains(&keyname) {
-//             already.push(keyname.to_owned());
-//             let req_opts = SimplePriceReq::new(keyname, curr[0].to_owned())
-//                 .include_market_cap()
-//                 .include_24hr_vol()
-//                 .include_24hr_change()
-//                 .include_last_updated_at();
-//             let req = client.simple_price(req_opts);
-//             futs.push(req);
+//             {
+//                 already.push(keyname.to_owned());
+//                 let req_opts: SimplePriceReq =
+//                     SimplePriceReq::new(keyname.to_owned(), curr[0].to_owned())
+//                         .include_market_cap()
+//                         .include_24hr_vol()
+//                         .include_24hr_change()
+//                         .include_last_updated_at()
+//                         .into();
+//                 // {
+//                 futs.push(req_opts);
+//                 // }
+//             }
 //         }
 //     }
 //     futs
 // }
-
-pub fn get_reqs(
-    assets: Vec<HashMap<String, HashMap<String, String>>>,
-    curr: &Vec<String>,
-) -> Vec<SimplePriceReq> {
-    let mut futs = Vec::new();
-    let mut already = Vec::new();
-    for i in assets {
-        let keyname = i.keys().next().unwrap().to_string();
-        if !already.contains(&keyname) {
-            {
-                already.push(keyname.to_owned());
-                let req_opts: SimplePriceReq =
-                    SimplePriceReq::new(keyname.to_owned(), curr[0].to_owned())
-                        .include_market_cap()
-                        .include_24hr_vol()
-                        .include_24hr_change()
-                        .include_last_updated_at()
-                        .into();
-                // {
-                futs.push(req_opts);
-                // }
-            }
-        }
-    }
-    futs
-}

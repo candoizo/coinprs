@@ -7,7 +7,7 @@ rustup install nightly
 
 WORKDIR /opt/build
 
-# cache rust deps for build
+# cache rust deps
 COPY Cargo.* ./
 RUN \
 mkdir -p src/ && \
@@ -18,7 +18,3 @@ cargo build --release
 COPY . .
 RUN \
 cargo build --release
-# RUN \
-# wasm-pack build && \
-# wasm-pack pack && \
-# wasm-pack test --firefox --headless
