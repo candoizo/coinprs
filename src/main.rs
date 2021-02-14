@@ -1,4 +1,3 @@
-#![feature(hash_drain_filter)]
 #![allow(dead_code)]
 use coingecko::{Client, SimplePriceReq};
 use colored::*;

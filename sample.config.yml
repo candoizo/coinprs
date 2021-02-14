@@ -1,0 +1,93 @@
+assets:
+
+  - bitcoin:
+      desc: lnd-01
+      tint: "#ffba45"
+      amount: 0.01723
+
+  - ethereum:
+      tint: "#3ce343"
+      amount: 0.01
+
+  - ethereum:
+      desc: weth
+      tint: "#3ce343"
+      amount: 0.123 #  Eth: 0.413682 USDC: 0.485114  figure out which asset gained only 0.29 eth 0.870135
+
+  - usd-coin:
+      desc: metamask
+      amount: 100.5
+      tint: "#318fb8"
+
+  - dogecoin:
+      desc: woof
+      amount: 1337
+      tint: "#cbb65d"
+
+table:
+  sort:
+    key: value
+    #inverse: true
+  # limited number of visible columns to specific
+  visible:
+    # - num
+    # - currency
+    # - num
+    # - desc
+    # - desc
+  localize: # override column headers (style / alignment / text )
+    header:
+      market_cap:
+        rows:
+          align: center
+          tint: tint
+      day_vol:
+        rows:
+          align: right
+      currency:
+        rows:
+          tint: tint
+          # align: center
+      day_change:
+        text: day_diff
+        align: center
+        rows:
+          align: right
+          # align: center
+      price:
+        rows:
+          align: right
+
+      value:
+        rows:
+          align: right
+      # desc:
+      #   rows:
+      #     align: center
+      update:
+        text: from
+        align: "center"
+        rows:
+          # align: center
+          # tint: tint
+      num: # overriding num column header
+        text: "#" # new title
+        align: center # centered title
+        tint: "#68d19b" # green text
+        rows:
+          tint: tint
+          # tint: tint # special color that uses asset tint if set
+          align: center
+      amount:
+        # text: qty # abbreviating quantity -> qty
+        align: center
+        tint: cyan
+        rows:
+          align: right
+          tint: "#68d19b"
+
+
+money:
+  round: 2
+  currency:
+    - usd
