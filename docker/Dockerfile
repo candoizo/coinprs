@@ -1,4 +1,4 @@
-FROM archlinux:base-devel
+FROM archlinux:base-devel as builder
 
 RUN sed -i "s/#IgnorePkg.*=/IgnorePkg = filesystem/g" /etc/pacman.conf
 
@@ -19,3 +19,6 @@ COPY . .
 RUN \
 cargo build --release && \
 strip target/release/coinprs
+
+FROM alpine:latest
+COPY --from=builder /target/release/coinprs .

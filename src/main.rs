@@ -2,7 +2,6 @@
 #![allow(dead_code)]
 use coingecko::{Client, SimplePriceReq};
 use colored::*;
-use futures::future::join_all;
 use rust_decimal::prelude::*;
 use rusty_money::iso;
 use std::collections::HashMap;
@@ -76,8 +75,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
             bar.set_message("Scanning...");
         }
     }
-    let resolved = join_all(futs).await;
 
+    let resolved = futures_util::future::join_all(futs).await;
     let req_map: HashMap<String, currency::CoingeckoResponse> = resolved
         .iter()
         .map(|x| {

@@ -2,6 +2,6 @@ version: "3.8"
 services:
   builder:
     build:
-      context: ..
+      context: .
       dockerfile: ./docker/Dockerfile
-    image: $DOCKER_REGISTRY/coinvanity/coinprs:latest
+    image: registry.gitlab.com/coinvanity/coinprs:latest

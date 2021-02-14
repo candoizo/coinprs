@@ -169,8 +169,8 @@ pub fn get_skeleton(conf: &config::Config, table_conf: &HashMap<String, Value>, 
 
 pub fn sort_rows(conf_two: &config::Config, conf: &HashMap<String, Value>, mut vec: Vec<RowData>) -> Vec<RowData> {
 
-    let dict: HashMap<String, Value> = conf["table"].to_owned().try_into().unwrap();
-    let sort_dict: HashMap<String, String> = dict["sort"].to_owned().try_into().unwrap();
+    // let dict: HashMap<String, Value> = conf["table"].to_owned().try_into().unwrap();
+    // let sort_dict: HashMap<String, String> = dict["sort"].to_owned().try_into().unwrap();
     // let sort_key: String = match sort_dict.get("key") {
     //     Some(i) => i.to_string(),
     //     None => "num".to_owned(),
@@ -386,11 +386,11 @@ pub fn get_table_row(
             //     _ => 0.0
             // };
 
-            let test_round_num = (vec.market_cap / 1_000_000.0).round() / 100.0;
-            let round_num : String = match test_round_num > 1000.0 {
-                true => (test_round_num / 10.0 ).to_string() + &"B",
-                false => test_round_num.to_string() + &"M"
-            };
+            // let test_round_num = (vec.market_cap / 1_000_000.0).round() / 100.0;
+            // let round_num : String = match test_round_num > 1000.0 {
+            //     true => (test_round_num / 10.0 ).to_string() + &"B",
+            //     false => test_round_num.to_string() + &"M"
+            // };
 
             let round_num = currency::to_shortnum(vec.market_cap);
             // round_num = match round_num > 1000 as f64 {
@@ -417,11 +417,11 @@ pub fn get_table_row(
             // let day_vol = Cell::new(vec.day_vol.to_string());
             // map.push(day_vol);
 
-            let test_round_num = (vec.day_vol / 1_000_000.0).round() / 100.0;
-            let round_num : String = match test_round_num > 1000.0 {
-                true => ((test_round_num / 100.0).round() / 100.0).to_string() + &"B",
-                false => test_round_num.to_string() + &"M"
-            };
+            // let test_round_num = (vec.day_vol / 1_000_000.0).round() / 100.0;
+            // let round_num : String = match test_round_num > 1000.0 {
+            //     true => ((test_round_num / 100.0).round() / 100.0).to_string() + &"B",
+            //     false => test_round_num.to_string() + &"M"
+            // };
             let round_num = currency::to_shortnum(vec.day_vol);
             // let round_num = (vec.day_vol / 1_000_000.0).round() / 100.0;
             let day_vol = self::get_cell(
