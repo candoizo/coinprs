@@ -47,10 +47,10 @@
 
 
 
-FROM rustlang/rust:nightly-slim
+FROM rustlang/rust:nightly-slim as builder
 
 WORKDIR /opt/build
-
+RUN apt update && apt install -y pkg-config libssl-dev
 # RUN \
 # # apk update && \
 # apk add --no-cache rustup gcc clang libcurl libc-dev openssl-dev && \
@@ -63,4 +63,15 @@ RUN \
 cargo build --release && \
 strip target/release/coinprs
 
-CMD ["/opt/build/target/release/coinprs", "-c", "/opt/build/sample.config.yml"]
+# FROM scratch
+FROM debian:buster-slim
+RUN  apt update && apt install -y libssl-dev && rm -rf /var/lib/apt/lists/*
+# COPY --from=builder /usr/local/cargo/bin/myapp /usr/local/bin/myapp
+# CMD ["myapp"]
+
+
+WORKDIR /opt/build
+COPY --from=builder /opt/build/target/release/coinprs .
+COPY --from=builder /opt/build/sample.config.yml .
+
+CMD ["./coinprs", "-c", "/opt/build/sample.config.yml"]

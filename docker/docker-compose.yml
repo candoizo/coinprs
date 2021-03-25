@@ -4,4 +4,4 @@ services:
     build:
       context: ..
       dockerfile: ./docker/Dockerfile
-    image: registry.gitlab.com/coinvanity/coinprs:latest
+    image: registry.gitlab.com/candoizo/coinprs-test:latest

@@ -1,6 +1,6 @@
-# Coinp.rs 💰
+# Coinprs 💰
 
-A sparkly config-driven cryptocurrency tracking cli written in Rust :crab:
+A pretty simple config-powered price tracking cli :crab:
 
 ## Features
 
@@ -8,32 +8,23 @@ A sparkly config-driven cryptocurrency tracking cli written in Rust :crab:
 -   Outrageously customizable, fast, cross-platform, 2.1mb!
 -   **YAML** configuration files, plus support for TOML/JSON/HJSON/INI.
 -   Well suited for cli / stdio / cronjob interactions
--   Red-green colourblind mode (or fully `#CUST0M` hex colours!) ❤️
+-   Make your own red-green colourblind mode (or fully `#CUST0M` hex colours!) ❤️
 
 #### Screenshots
 
-@TODO
+<img src="./media/ss01.png"/>
 
-## Installation
+## Setup
 
-Docker: (3Mb) **Recommended**
+Docker
 
 ```bash
-docker pull https://registry.gitlab.com/candoizo/coinprs:latest
-# save a configuration file somewhere, and it's ready to go!
-docker run -v "./coinprs.yml:/coinprs.yml" candoizo/coinprs report
+cd docker/ && docker-compose build
 ```
 
-Rust Cargo: `cargo install coinprs`
-
-Arch Linux:
-
+Cargo
 ```bash
-# from the aur
-paru -S coinprs
-# from source
-git clone https://registry.gitlab.com/candoizo/coinprs
-cd coinprs && makepkg -si
+cargo build --release
 ```
 
 ## Basic Configuration
@@ -228,18 +219,6 @@ Saved to ./coinprs.2020-01-31.14.36.55.txt
 coinprs report > $TIME.txt
 ```
 
-Display only bitcoin assets.
-
-```sh
-coinprs report bitcoin
-```
-
-Check the price of Bitcoin.
-
-```sh
-coinprs price bitcoin
-```
-
 ## Build
 
 This project can be built from source using a docker container using `docker-compose`.
@@ -257,15 +236,8 @@ If you have a particular feature request or inconsistency wirth addressing, incl
 
 ## @TODO
 
-- Things, for sure.
+- Things that aren't done, for sure.
 
 ## License
 
 Apache 2.0 License
-
-Following conditions must be met:
-
--   Improvements / new features must be passed back to this project
--   Bug fixes / additional enhancements must be documented
-
-To be determined...
